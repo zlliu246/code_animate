@@ -34,6 +34,14 @@ def add_line_dry_run_ok(
 ) -> bool:
     """
     Check if adding new_line to existing_code_lines result in error when compiling function
+
+    Args:
+        existing_code_lines (list[str]): list of code lines to try to run
+        new_line (str): new line of code we are attempting to add to existing_code_lines
+    
+    Returns:
+        (bool): if adding new_line causes compilation error, return False
+                else, return True
     """
     # create source code
     src = "\n".join(existing_code_lines + [new_line])

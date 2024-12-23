@@ -1,6 +1,6 @@
 import re
 from functools import wraps
-from typing import Any, Callable
+from typing import Any, Callable, Sequence, Optional
 
 from .helpers.draw_helper import draw_code
 from .helpers.frame_helper import filter_framedict, compute_diff
@@ -9,7 +9,15 @@ from .framify import framify
 
 from unprint import unprint
 
-def animate(*args) -> Callable:
+def animate(*args: Optional[Sequence[str]]) -> Callable:
+    """
+    Animates your function step by step, printing changes in variables at each step
+
+    Args
+        *args (Optional[Sequence[str]]): variable names you want to focus on. Only these will be printed in animation
+    Returns
+        (Callable) modified function with animation capabilities.
+    """
 
     SELECTED_KEYS = {arg for arg in args if isinstance(arg, str)}
     

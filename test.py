@@ -1,23 +1,16 @@
 
 
-from src.code_animate import animate, framify
+from src.code_animate import animate
 
 @animate()
-def pyramid(letters: str) -> None:
-    row_length: int = 1
-    start_index: int = 0
-    output: list[str] = []
+def triangle(height: int) -> str:
+    output: str = ""
 
-    while start_index < len(letters):
+    for i in range(height):
+        num_stars: int = i + 1
+        stars_str: str = "*" * num_stars
+        output += stars_str + "\n"
 
-        end_index: int = start_index + row_length
+    return output
 
-        row: str = letters[start_index: end_index]
-        output.append(row)
-
-        row_length += 1
-        start_index = end_index
-
-    return "\n".join(output)
-
-print(pyramid("abcdefg"))
+print(triangle(4))

@@ -8,16 +8,15 @@ from .helpers.main_helper import gen_clean_src_dirty_src_pair
 from .helpers.func_helper import create_func_from_src
 from .helpers.string_helper import clean_up_src
 
-def framify(
-    func: Callable
-) -> Callable:
+def framify(func: Callable) -> Callable:
     """
-    Makes a function returns additional list[FrameType]
+    Extracts frames from function when function is run.
+    Makes function return additional list of (framedict, line_number)
 
-    eg. if a function originally "return some_number"
-        it now "return frames, some_number"
-
-    where frames is a list of inspect.frames
+    Args:
+        func (Callable): function you wish to framify
+    Returns
+        (Callable): modified function that also returns list of (framedict, line_number)
     """
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> InspectInfo:

@@ -9,7 +9,7 @@ version = "0.0.2"
 authors = [
     { name="Liu Zuo Lin", email="zlliu246@gmail.com" },
 ]
-description = "SOME DESCRIPTION"
+description = "A package to animate your code step by step in temrinal"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
