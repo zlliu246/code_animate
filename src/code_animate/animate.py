@@ -10,7 +10,7 @@ from .framify import framify
 from unprint import unprint
 
 def __wrapper_body(
-    newfunc: Callable,
+    func: Callable,
     selected_keys: set[str],
     *args: Any,
     **kwargs: Any,
@@ -18,13 +18,11 @@ def __wrapper_body(
     """
     Body of wrapper function
     """
+    # framify original function
+    newfunc = framify(func)
+
     # call modified function
-    (
-        clean_src_lines, 
-        dirty_src_lines, 
-        frames, 
-        output,
-    ) = newfunc(*args, **kwargs)
+    clean_src_lines, dirty_src_lines, frames, output = newfunc(*args, **kwargs)
 
     current_framedict: dict[str, Any] = {}
 
@@ -82,8 +80,7 @@ def animate(
         func: Callable = args[0]
         @wraps(func)
         def wrapper(*args, **kwargs):
-            newfunc = framify(func)
-            return __wrapper_body(newfunc, set(), *args, **kwargs)
+            return __wrapper_body(func, set(), *args, **kwargs)
         return wrapper
 
     selected_keys = {arg for arg in args if isinstance(arg, str)}
@@ -92,8 +89,7 @@ def animate(
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
-            newfunc = framify(func)
-            return __wrapper_body(newfunc, selected_keys, *args, **kwargs)
+            return __wrapper_body(func, selected_keys, *args, **kwargs)
         return wrapper
 
     return decorator
