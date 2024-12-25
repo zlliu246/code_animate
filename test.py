@@ -2,7 +2,7 @@
 
 from src.code_animate import animate
 
-@animate()
+@animate
 def triangle(height: int) -> str:
     output: str = ""
 

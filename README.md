@@ -13,7 +13,7 @@ pip install code_animate
 ```python
 from code_animate import animate
 
-@animate()
+@animate
 def triangle(height: int) -> str:
     output: str = ""
 
