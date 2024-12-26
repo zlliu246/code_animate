@@ -1,18 +1,14 @@
 from src.code_animate import animate
-import inspect
-
-ONE = 1
-TWO = 2
 
 @animate
-def test():
-    a = ONE
-    b = TWO
+def triangle(height: int) -> str:
+    output: str = ""
 
-    output = 0
-    for i in range(5):
-        output += a + b
+    for i in range(height):
+        num_stars: int = i + 1
+        stars_str: str = "*" * num_stars
+        output += stars_str + "\n"
 
     return output
 
-print(test())
+print(triangle(4))

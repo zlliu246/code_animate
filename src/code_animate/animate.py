@@ -19,11 +19,14 @@ def animate(func):
         __frames__ = []
         caller_globals["__frames__"] = __frames__
         caller_globals["handle_frame"] = handle_frame
+        caller_globals["inspect"] = inspect
 
         src_lines: list[str] = get_clean_src_lines(func)
         mod_lines: list[str] = get_modified_src_lines(src_lines, caller_globals)
 
         newfunc = create_func_from_src("\n".join(mod_lines), caller_globals)
+
+        # print("\n".join(mod_lines))
 
         output = newfunc(*args, **kwargs)
 
