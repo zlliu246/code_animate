@@ -1,10 +1,50 @@
-"""
-helper functions related to creating function from string and vice versa
-"""
 import re
-
-from typing import Callable
+import inspect
+from collections.abc import Callable
 from types import CodeType, FunctionType
+from textwrap import dedent
+
+from .string_helper import remove_comment_from_line, is_recursive
+
+def get_clean_src_lines(func: Callable) -> list[str]:
+    src_lines: list[str] = dedent(inspect.getsource(func)).split("\n")
+
+    # remove all lines before 'def' keyword
+    while True:
+        if not src_lines:
+            raise Exception(f"Not a function: {src_lines}")
+        if re.findall(r" *def .*", src_lines[0]):
+            break
+        src_lines.pop(0)
+
+    # remove empty lines
+    out_src_lines: list[str] = []
+    for line in src_lines:
+        line: str = remove_comment_from_line(line)
+        if line.strip():
+            out_src_lines.append(line)
+    return out_src_lines
+
+
+def get_modified_src_lines(src_lines: list[str], desired_globals) -> list[str]:
+    out: list[str] = []
+    for line in src_lines:
+        mod_line: str = line + " ; __frames__.append(handle_frame(inspect.currentframe()))"
+        if add_line_dry_run_success(out, mod_line, desired_globals):
+            out.append(mod_line)
+        else:
+            out.append(line)
+    return out
+
+def add_line_dry_run_success(src_lines, newline, desired_globals):
+    src = "\n".join(src_lines + [newline])
+    try:    # test if adding new line to existing src_lines works
+        create_func_from_src(src, desired_globals)
+        return True
+    except Exception as e:
+        # print(e)
+        return False
+
 
 def create_func_from_src(src: str, desired_globals: dict) -> Callable:
     """
@@ -15,11 +55,7 @@ def create_func_from_src(src: str, desired_globals: dict) -> Callable:
     Returns
         Callable: function created from source code
     """
-    if is_recursive(src):
-        raise Exception("recursive functions are not supported (yet)")
-
     module_code_obj: CodeType = compile(src, "<string>", "exec")
-
     # module_code_obj.co_const might have multiple objects due to type annotations
     # find the CodeType object and use it in FunctionType
     func_code_obj: FunctionType = None
@@ -27,40 +63,4 @@ def create_func_from_src(src: str, desired_globals: dict) -> Callable:
         if isinstance(value, CodeType):
             func_code_obj = value
             break
-    
-    func: FunctionType = FunctionType(func_code_obj, desired_globals)
-
-    return func
-
-def add_line_dry_run_ok(
-    existing_code_lines: list[str],
-    new_line: str,
-    desired_globals: dict,
-) -> bool:
-    """
-    Check if adding new_line to existing_code_lines result in error when compiling function
-
-    Args:
-        existing_code_lines (list[str]): list of code lines to try to run
-        new_line (str): new line of code we are attempting to add to existing_code_lines
-            
-    Returns:
-        (bool): if adding new_line causes compilation error, return False
-                else, return True
-    """
-    # create source code
-    src = "\n".join(existing_code_lines + [new_line])
-    
-    # try to create function from source code string
-    try:
-        create_func_from_src(src, desired_globals)
-        return True
-    except Exception as e:
-        print(e)
-        return False
-    
-
-def is_recursive(src: str) -> bool:
-    func_name: str = re.findall(r"def (\w+)\(", src)[0]
-    occurrences: list[str] = re.findall(rf"\W{func_name}\(", src)
-    return len(occurrences) > 1
+    return FunctionType(func_code_obj, desired_globals)

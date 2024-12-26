@@ -1,3 +1,3 @@
-from .main import framify, animate
+from .animate import animate
 
-__all__ = ["framify", "animate"]
+__all__ = ["animate"]

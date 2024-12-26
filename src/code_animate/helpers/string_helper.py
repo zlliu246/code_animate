@@ -1,54 +1,4 @@
-"""
-Functions relating to string manipulation
-"""
-
 import re
-from textwrap import dedent
-
-from .exceptions import NotAFunctionException
-
-def get_indent(line: str) -> str:
-    """
-    Get indent of string (leading spaces before first non-space character)
-    """
-    try:
-        return re.findall(r"(\s+)\S", line)[0]
-    except:
-        return ""
-    
-def clean_up_src(src: str) -> str:
-    """
-    Cleans source code of a function
-    """
-    # unindent src in case it is indented
-    src = dedent(src)
-
-    # split src into list[str]
-    src_lines: list[str] = src.split("\n")
-
-    # remove all lines before def
-    while True:
-        if not src_lines:
-            raise NotAFunctionException(f"Not a function: {src}")
-        if re.findall(r" *def .*", src_lines[0]):
-            break
-        src_lines.pop(0)
-        
-    output_lines: list[str] = []
-
-    for line in src_lines:
-
-        # remove comments from line
-        line: str = remove_comment_from_line(line)
-
-        # skip if empty line
-        if not line.strip():
-            continue
-
-        output_lines.append(line)
-
-    return "\n".join(output_lines)
-
 
 def remove_comment_from_line(line: str) -> str:
     """
@@ -73,3 +23,7 @@ def remove_comment_from_line(line: str) -> str:
     
     return line
 
+def is_recursive(src: str) -> bool:
+    func_name: str = re.findall(r"def (\w+)\(", src)[0]
+    occurrences: list[str] = re.findall(rf"\W{func_name}\(", src)
+    return len(occurrences) > 1

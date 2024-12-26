@@ -1,21 +1,17 @@
-from src.code_animate import animate, framify
+from src.code_animate import animate
+import inspect
 
-def test1():
-    return 1
-
-def test2():
-    return 2
-
-def test3():
-    return 3
+ONE = 1
+TWO = 2
 
 @animate
 def test():
-    a = test1()
-    b = test2()
-    c = test3()
+    a = ONE
+    b = TWO
 
-    output = a + b + c
+    output = 0
+    for i in range(5):
+        output += a + b
 
     return output
 
