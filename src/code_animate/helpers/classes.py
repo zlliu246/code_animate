@@ -14,4 +14,4 @@ class InspectInfo(NamedTuple):
 @dataclass
 class CodeLineToDraw:
     line: str       # actual code line
-    comment: str    # printed afterwards
+    vars: dict      # printed afterwards

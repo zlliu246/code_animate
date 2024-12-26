@@ -28,7 +28,7 @@ def __wrapper_body(
 
     # comments printed after codeline in terminal
     codelines_to_draw: list[CodeLineToDraw] = [
-        CodeLineToDraw(line=line, comment="") 
+        CodeLineToDraw(line=line, vars={}) 
         for line in clean_src_lines
     ]
 
@@ -43,7 +43,7 @@ def __wrapper_body(
         diff: dict[str, Any] = compute_diff(current_framedict, framedict)
 
         # add comment to codelines_to_draw
-        codelines_to_draw[line_index].comment = str(diff)
+        codelines_to_draw[line_index].vars = diff
 
         draw_code(codelines_to_draw, line_index)
         

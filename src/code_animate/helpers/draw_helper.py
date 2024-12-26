@@ -2,9 +2,32 @@
 helper functions relating to drawing code on terminal
 """
 
-from colorama import Fore, Back
+from typing import Any
 
 from .classes import CodeLineToDraw
+
+from colorama import Fore, Back
+
+def draw_vars(var_dict: dict[str, Any]) -> str:
+    """
+    {"a": 4, "b": "apple"}
+
+    To:
+
+    a=4 b='apple' (with colour codes)
+    """
+    output_line: str = ""
+
+    for key, val in var_dict.items():
+        output_line += (
+            Fore.RED + key + 
+            Fore.WHITE + " = " +
+            Fore.GREEN + repr(val) + 
+            "  "
+        )
+
+    return output_line
+
 
 def draw_code(
     codelines_to_draw: list[CodeLineToDraw],
@@ -32,14 +55,13 @@ def draw_code(
                 Fore.GREEN + 
                 codeline_to_draw.line + 
                 padding + 
-                Fore.RED + 
-                codeline_to_draw.comment
+                draw_vars(codeline_to_draw.vars)
             )
         else:
             print(
                 RESET_ALL + 
                 codeline_to_draw.line + 
                 padding +
-                Fore.RED + codeline_to_draw.comment
+                draw_vars(codeline_to_draw.vars)
             )
     print(RESET_ALL)

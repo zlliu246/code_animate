@@ -1,6 +1,7 @@
 """
 helper functions related to creating function from string and vice versa
 """
+import re
 
 from typing import Callable
 from types import CodeType, FunctionType
@@ -14,6 +15,9 @@ def create_func_from_src(src: str) -> Callable:
     Returns
         Callable: function created from source code
     """
+    if is_recursive(src):
+        raise Exception("recursive functions are not supported (yet)")
+
     module_code_obj: CodeType = compile(src, "<string>", "exec")
 
     # module_code_obj.co_const might have multiple objects due to type annotations
@@ -52,3 +56,9 @@ def add_line_dry_run_ok(
         return True
     except Exception as e:
         return False
+    
+
+def is_recursive(src: str) -> bool:
+    func_name: str = re.findall(r"def (\w+)\(", src)[0]
+    occurrences: list[str] = re.findall(rf"\W{func_name}\(", src)
+    return len(occurrences) > 1
