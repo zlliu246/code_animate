@@ -5,11 +5,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "code_animate"
-version = "0.0.9"
+version = "0.0.10"
 authors = [
     { name="Liu Zuo Lin", email="zlliu246@gmail.com" },
 ]
-description = "A package to animate your code step by step in temrinal"
+description = "A package to animate your function call step by step in terminal"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
