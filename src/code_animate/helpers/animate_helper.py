@@ -34,7 +34,10 @@ def animate_frames(
         unprint(len(src_lines)+3)
         current_items = vars_dict
 
-    animate_once(animation_lines, line_index)
+    try:
+        animate_once(animation_lines, line_index)
+    except:
+        pass
 
 def animate_once(
     animation_lines: list[AnimationLine],
