@@ -6,7 +6,7 @@ import re
 from typing import Callable
 from types import CodeType, FunctionType
 
-def create_func_from_src(src: str) -> Callable:
+def create_func_from_src(src: str, desired_globals: dict) -> Callable:
     """
     Creates a function from source code
 
@@ -28,13 +28,14 @@ def create_func_from_src(src: str) -> Callable:
             func_code_obj = value
             break
     
-    func: FunctionType = FunctionType(func_code_obj, locals())
+    func: FunctionType = FunctionType(func_code_obj, desired_globals)
 
     return func
 
 def add_line_dry_run_ok(
     existing_code_lines: list[str],
     new_line: str,
+    desired_globals: dict,
 ) -> bool:
     """
     Check if adding new_line to existing_code_lines result in error when compiling function
@@ -42,7 +43,7 @@ def add_line_dry_run_ok(
     Args:
         existing_code_lines (list[str]): list of code lines to try to run
         new_line (str): new line of code we are attempting to add to existing_code_lines
-    
+            
     Returns:
         (bool): if adding new_line causes compilation error, return False
                 else, return True
@@ -52,9 +53,10 @@ def add_line_dry_run_ok(
     
     # try to create function from source code string
     try:
-        create_func_from_src(src)
+        create_func_from_src(src, desired_globals)
         return True
     except Exception as e:
+        print(e)
         return False
     
 

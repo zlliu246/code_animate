@@ -1,16 +1,22 @@
+from src.code_animate import animate, framify
 
+def test1():
+    return 1
 
-from src.code_animate import animate
+def test2():
+    return 2
+
+def test3():
+    return 3
 
 @animate
-def triangle(height: int) -> str:
-    output: str = ""
+def test():
+    a = test1()
+    b = test2()
+    c = test3()
 
-    for i in range(height):
-        num_stars: int = i + 1
-        stars_str: str = "*" * num_stars
-        output += stars_str + "\n"
+    output = a + b + c
 
     return output
 
-print(triangle(4))
+print(test())

@@ -21,14 +21,26 @@ def framify(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> InspectInfo:
         
+        # experimental inspect bullshit TODO: reserach more lol
+        frameinfo_stack: list["FrameInfo"] = inspect.stack()
+        desired_stack: "FrameInfo"= frameinfo_stack[-1]
+        desired_frame: "Frame" = desired_stack[0]
+        desired_caller_globals: dict[str, Any] = dict(
+            inspect.getmembers(desired_frame)
+        )["f_globals"]
+        print(desired_caller_globals.keys())
+        # end of bs
+
+
+
         # get dedented source code of original func
         src: str = clean_up_src(inspect.getsource(func))
 
         # modify source code: insert inspect statements
-        clean_src, dirty_src = gen_clean_src_dirty_src_pair(src)
+        clean_src, dirty_src = gen_clean_src_dirty_src_pair(src, desired_caller_globals)
 
         # create function from new_src
-        new_func: Callable = create_func_from_src(dirty_src)
+        new_func: Callable = create_func_from_src(dirty_src, desired_caller_globals)
 
         # return original output
         frames, output = new_func(*args, **kwargs)

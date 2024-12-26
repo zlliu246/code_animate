@@ -6,7 +6,10 @@ from .classes import CleanSrcDirtySrcPair
 from .string_helper import get_indent
 from .func_helper import add_line_dry_run_ok
 
-def gen_clean_src_dirty_src_pair(src: str) -> CleanSrcDirtySrcPair:
+def gen_clean_src_dirty_src_pair(
+    src: str,
+    desired_globals: dict
+) -> CleanSrcDirtySrcPair:
     """
     Generate clean and dirty src from original src
     
@@ -72,7 +75,7 @@ def gen_clean_src_dirty_src_pair(src: str) -> CleanSrcDirtySrcPair:
                 + "{k: default_deepcopy(v) for k,v in __frame__.f_locals.items() if '__frame' not in k}"
                 + ", __frame__.f_lineno ])"
             )
-            if add_line_dry_run_ok(dirty_src_lines, frame_line):
+            if add_line_dry_run_ok(dirty_src_lines, frame_line, desired_globals):
                 dirty_src_lines.append(frame_line)
                 clean_src_lines.append(line)
             else:
